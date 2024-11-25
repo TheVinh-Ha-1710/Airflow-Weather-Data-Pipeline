@@ -1,0 +1,169 @@
+[2024-11-22T02:08:33.112+0000] {local_task_job_runner.py:123} INFO - ::group::Pre task execution logs
+[2024-11-22T02:08:33.165+0000] {taskinstance.py:2613} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: weather_data_pipeline.load_weather_data manual__2024-11-22T02:08:17.118284+00:00 [queued]>
+[2024-11-22T02:08:33.197+0000] {taskinstance.py:2613} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: weather_data_pipeline.load_weather_data manual__2024-11-22T02:08:17.118284+00:00 [queued]>
+[2024-11-22T02:08:33.198+0000] {taskinstance.py:2866} INFO - Starting attempt 1 of 2
+[2024-11-22T02:08:33.241+0000] {taskinstance.py:2889} INFO - Executing <Task(PythonOperator): load_weather_data> on 2024-11-22 02:08:17.118284+00:00
+[2024-11-22T02:08:33.260+0000] {warnings.py:112} WARNING - /home/***/.local/lib/python3.12/site-packages/***/task/task_runner/standard_task_runner.py:70: DeprecationWarning: This process (pid=323) is multi-threaded, use of fork() may lead to deadlocks in the child.
+  pid = os.fork()
+
+[2024-11-22T02:08:33.264+0000] {standard_task_runner.py:72} INFO - Started process 325 to run task
+[2024-11-22T02:08:33.266+0000] {standard_task_runner.py:104} INFO - Running: ['***', 'tasks', 'run', 'weather_data_pipeline', 'load_weather_data', 'manual__2024-11-22T02:08:17.118284+00:00', '--job-id', '22', '--raw', '--subdir', 'DAGS_FOLDER/etl_pipeline.py', '--cfg-path', '/tmp/tmp08qwq10j']
+[2024-11-22T02:08:33.275+0000] {standard_task_runner.py:105} INFO - Job 22: Subtask load_weather_data
+[2024-11-22T02:08:33.425+0000] {task_command.py:467} INFO - Running <TaskInstance: weather_data_pipeline.load_weather_data manual__2024-11-22T02:08:17.118284+00:00 [running]> on host a303ff5ff27e
+[2024-11-22T02:08:33.789+0000] {taskinstance.py:3132} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='weather_data_pipeline' AIRFLOW_CTX_TASK_ID='load_weather_data' AIRFLOW_CTX_EXECUTION_DATE='2024-11-22T02:08:17.118284+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2024-11-22T02:08:17.118284+00:00'
+[2024-11-22T02:08:33.793+0000] {taskinstance.py:731} INFO - ::endgroup::
+[2024-11-22T02:08:33.849+0000] {warnings.py:112} WARNING - /opt/***/dags/etl_pipeline.py:45: FutureWarning: Passing literal json to 'read_json' is deprecated and will be removed in a future version. To read from a literal string, wrap it in a 'StringIO' object.
+  hourly_data = pd.read_json(hourly_json)
+
+[2024-11-22T02:08:33.889+0000] {warnings.py:112} WARNING - /opt/***/dags/etl_pipeline.py:46: FutureWarning: Passing literal json to 'read_json' is deprecated and will be removed in a future version. To read from a literal string, wrap it in a 'StringIO' object.
+  daily_data = pd.read_json(daily_json)
+
+[2024-11-22T02:08:33.927+0000] {connection.py:277} WARNING - Connection schemes (type: google_cloud_platform) shall not contain '_' according to RFC3986.
+[2024-11-22T02:08:33.936+0000] {base.py:84} INFO - Retrieving connection 'google_cloud_default'
+[2024-11-22T02:08:34.206+0000] {etl_pipeline.py:89} INFO - Uploading hourly data to BigQuery...
+[2024-11-22T02:08:34.336+0000] {_pandas_helpers.py:310} ERROR - Error converting Pandas column with name: "time" and datatype: "object" to an appropriate pyarrow datatype: Array, ListArray, or StructArray
+[2024-11-22T02:08:34.338+0000] {taskinstance.py:3311} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/google/cloud/bigquery/_pandas_helpers.py", line 307, in bq_to_arrow_array
+    return pyarrow.Array.from_pandas(series, type=arrow_type)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "pyarrow/array.pxi", line 1126, in pyarrow.lib.Array.from_pandas
+  File "pyarrow/array.pxi", line 360, in pyarrow.lib.array
+  File "pyarrow/array.pxi", line 87, in pyarrow.lib._ndarray_to_array
+  File "pyarrow/error.pxi", line 92, in pyarrow.lib.check_status
+pyarrow.lib.ArrowTypeError: object of type <class 'str'> cannot be converted to int
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/airflow/dags/etl_pipeline.py", line 90, in upload_to_gcs
+    client.load_table_from_dataframe( # Hourly data
+  File "/home/airflow/.local/lib/python3.12/site-packages/google/cloud/bigquery/client.py", line 2793, in load_table_from_dataframe
+    _pandas_helpers.dataframe_to_parquet(
+  File "/home/airflow/.local/lib/python3.12/site-packages/google/cloud/bigquery/_pandas_helpers.py", line 653, in dataframe_to_parquet
+    arrow_table = dataframe_to_arrow(dataframe, bq_schema)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/google/cloud/bigquery/_pandas_helpers.py", line 596, in dataframe_to_arrow
+    bq_to_arrow_array(get_column_or_index(dataframe, bq_field.name), bq_field)
+  File "/home/airflow/.local/lib/python3.12/site-packages/google/cloud/bigquery/_pandas_helpers.py", line 311, in bq_to_arrow_array
+    raise pyarrow.ArrowTypeError(msg)
+pyarrow.lib.ArrowTypeError: Error converting Pandas column with name: "time" and datatype: "object" to an appropriate pyarrow datatype: Array, ListArray, or StructArray
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/taskinstance.py", line 767, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/taskinstance.py", line 733, in _execute_callable
+    return ExecutionCallableRunner(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/operator_helpers.py", line 252, in run
+    return self.func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/baseoperator.py", line 417, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/operators/python.py", line 238, in execute
+    return_value = self.execute_callable()
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/operators/python.py", line 256, in execute_callable
+    return runner.run(*self.op_args, **self.op_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/operator_helpers.py", line 252, in run
+    return self.func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/airflow/dags/etl_pipeline.py", line 105, in upload_to_gcs
+    raise Exception("Failed to upload data")
+Exception: Failed to upload data
+[2024-11-22T02:08:34.371+0000] {taskinstance.py:1225} INFO - Marking task as UP_FOR_RETRY. dag_id=weather_data_pipeline, task_id=load_weather_data, run_id=manual__2024-11-22T02:08:17.118284+00:00, execution_date=20241122T020817, start_date=20241122T020833, end_date=20241122T020834
+[2024-11-22T02:08:34.401+0000] {taskinstance.py:340} INFO - ::group::Post task execution logs
+[2024-11-22T02:08:34.402+0000] {standard_task_runner.py:124} ERROR - Failed to execute job 22 for task load_weather_data (Failed to upload data; 325)
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/google/cloud/bigquery/_pandas_helpers.py", line 307, in bq_to_arrow_array
+    return pyarrow.Array.from_pandas(series, type=arrow_type)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "pyarrow/array.pxi", line 1126, in pyarrow.lib.Array.from_pandas
+  File "pyarrow/array.pxi", line 360, in pyarrow.lib.array
+  File "pyarrow/array.pxi", line 87, in pyarrow.lib._ndarray_to_array
+  File "pyarrow/error.pxi", line 92, in pyarrow.lib.check_status
+pyarrow.lib.ArrowTypeError: object of type <class 'str'> cannot be converted to int
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/airflow/dags/etl_pipeline.py", line 90, in upload_to_gcs
+    client.load_table_from_dataframe( # Hourly data
+  File "/home/airflow/.local/lib/python3.12/site-packages/google/cloud/bigquery/client.py", line 2793, in load_table_from_dataframe
+    _pandas_helpers.dataframe_to_parquet(
+  File "/home/airflow/.local/lib/python3.12/site-packages/google/cloud/bigquery/_pandas_helpers.py", line 653, in dataframe_to_parquet
+    arrow_table = dataframe_to_arrow(dataframe, bq_schema)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/google/cloud/bigquery/_pandas_helpers.py", line 596, in dataframe_to_arrow
+    bq_to_arrow_array(get_column_or_index(dataframe, bq_field.name), bq_field)
+  File "/home/airflow/.local/lib/python3.12/site-packages/google/cloud/bigquery/_pandas_helpers.py", line 311, in bq_to_arrow_array
+    raise pyarrow.ArrowTypeError(msg)
+pyarrow.lib.ArrowTypeError: Error converting Pandas column with name: "time" and datatype: "object" to an appropriate pyarrow datatype: Array, ListArray, or StructArray
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/task/task_runner/standard_task_runner.py", line 117, in _start_by_fork
+    ret = args.func(args, dag=self.dag)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/cli/cli_config.py", line 49, in command
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/cli.py", line 116, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/cli/commands/task_command.py", line 483, in task_run
+    task_return_code = _run_task_by_selected_method(args, _dag, ti)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/cli/commands/task_command.py", line 256, in _run_task_by_selected_method
+    return _run_raw_task(args, ti)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/cli/commands/task_command.py", line 341, in _run_raw_task
+    return ti._run_raw_task(
+           ^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/session.py", line 97, in wrapper
+    return func(*args, session=session, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/taskinstance.py", line 3005, in _run_raw_task
+    return _run_raw_task(
+           ^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/taskinstance.py", line 273, in _run_raw_task
+    TaskInstance._execute_task_with_callbacks(
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/taskinstance.py", line 3159, in _execute_task_with_callbacks
+    result = self._execute_task(context, task_orig)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/taskinstance.py", line 3183, in _execute_task
+    return _execute_task(self, context, task_orig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/taskinstance.py", line 767, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/taskinstance.py", line 733, in _execute_callable
+    return ExecutionCallableRunner(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/operator_helpers.py", line 252, in run
+    return self.func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/baseoperator.py", line 417, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/operators/python.py", line 238, in execute
+    return_value = self.execute_callable()
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/operators/python.py", line 256, in execute_callable
+    return runner.run(*self.op_args, **self.op_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/operator_helpers.py", line 252, in run
+    return self.func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/airflow/dags/etl_pipeline.py", line 105, in upload_to_gcs
+    raise Exception("Failed to upload data")
+Exception: Failed to upload data
+[2024-11-22T02:08:34.460+0000] {local_task_job_runner.py:266} INFO - Task exited with return code 1
+[2024-11-22T02:08:34.683+0000] {taskinstance.py:3895} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2024-11-22T02:08:34.706+0000] {local_task_job_runner.py:245} INFO - ::endgroup::

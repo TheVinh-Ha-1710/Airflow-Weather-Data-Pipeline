@@ -1,4 +1,4 @@
 credentials/
 logs/
 .env
-dags/pycache/
+dags/__pycache__/

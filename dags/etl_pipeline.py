@@ -2,6 +2,8 @@ import pandas as pd
 import requests
 import json
 
+from Location import Location
+from Parameters import Parameters
 from google.cloud import bigquery
 from airflow import DAG
 from airflow.operators.python import PythonOperator
@@ -11,14 +13,13 @@ from datetime import datetime
 # Step 1: Fetch weather data from Open-Meteo API
 def fetch_weather_data():
     url = "https://api.open-meteo.com/v1/forecast"
-    params = {
-        "latitude": -33.8688,  # Sydney Latitude
-        "longitude": 151.2093,  # Sydney Longitude
-        "hourly": "temperature_2m,windspeed_10m,precipitation,relative_humidity_2m",  # Hourly data
-        "daily": "temperature_2m_max,temperature_2m_min,precipitation_sum,wind_direction_10m_dominant",  # Daily data
-        "timezone": "auto",
-        "models": "bom_access_global"
-    }
+    
+    # Create instances of Location and Parameters and convert them to dictionaries
+    location = Location().to_dict() # Default location is Sydney
+    parameters = Parameters().to_dict() # Default parameters are hourly and daily data
+    
+    params = {**location, **parameters} # Merge the two dictionaries
+    
     try:
         responses = requests.get(url=url, params=params)
         

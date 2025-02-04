@@ -2,8 +2,8 @@ import pandas as pd
 import requests
 import json
 
-from Location import Location
-from Parameters import Parameters
+from location import Location
+from constants import Constants
 from google.cloud import bigquery
 from airflow import DAG
 from airflow.operators.python import PythonOperator
@@ -16,9 +16,9 @@ def fetch_weather_data():
     
     # Create instances of Location and Parameters and convert them to dictionaries
     location = Location().to_dict() # Default location is Sydney
-    parameters = Parameters().to_dict() # Default parameters are hourly and daily data
+    constants = Constants().to_dict() # Default parameters are hourly and daily data
     
-    params = {**location, **parameters} # Merge the two dictionaries
+    params = {**location, **constants} # Merge the two dictionaries
     
     try:
         responses = requests.get(url=url, params=params)

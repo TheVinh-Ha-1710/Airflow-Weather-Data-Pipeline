@@ -2,8 +2,8 @@ import pandas as pd
 import requests
 import json
 
-from location import Location
-from constants import Constants
+from DataClasses.location import Location
+from DataClasses.constants import Constants
 from google.cloud import bigquery
 from airflow import DAG
 from airflow.operators.python import PythonOperator
